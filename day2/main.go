@@ -8,51 +8,52 @@ import (
 	"strconv"
 	"strings"
 )
-
-func main(){
-	// read file
-	data, err := os.ReadFile("input.txt")
-	if err != nil{
-		fmt.Println(err)
-	}
-
-	// str := strings.Fields(string(data))
-	str := strings.Split(string(data), "\n")
-	// var total string
 	var difference []int
 	// var diffMatrix [][]int
 	var safe int = 0
 	var next int
-	var val2 []int
-	// var valInt int
-	// var valNext int
+	var value2 []int
 	var check bool
-	// var safety []string
+	
+func main(){
+	data, err := os.ReadFile("test.txt")
+	if err != nil{
+		fmt.Println(err)
+	}
 
-	// str = slices.DeleteFunc(str, func(i []any) bool {
-	// 	return len(i) == 0
-	// })
+	str := strings.Split(string(data), "\n")
+
 	for _, value := range str[:len(str) - 1]{
-		// fmt.Println(strings.Split(value, ""))
-
 		
-		val2 = toInt(strings.Split(value, " "))
-
-		fmt.Print(val2)
-		if !(slices.IsSorted(val2) || slices.IsSorted(reverse(val2))) {
-		fmt.Println("val2 that is invalid", val2)
+		value2 = toInt(strings.Split(value, " "))
+		if !(slices.IsSorted(value2) || slices.IsSorted(reverse(value2))) {
+			checkUnsafe(value2)
 			continue	
+		}else{
+		checkSafety(value2)
 		}
+
+
+
+	
+	}
+	fmt.Println("safe reports", safe )
+}
+
+func checkSafety(val2 []int){
 		for i:= 0; i < len(val2) - 1; i ++{
 			check = false
 			next = i + 1
 			difference = append(difference, int(math.Abs(float64(val2[i]) - float64(val2[next]))))
 			}
+
 			for _, val := range difference{
 				if val < 4 && val > 0 {
 					check = true
 				}else {
 				check = false
+				
+				checkUnsafe(val2)
 				break
 			}
 		}
@@ -60,10 +61,10 @@ func main(){
 			if check == true{
 				safe ++
 			}
+
 			check = false
 			difference = []int{}
-	}
-	fmt.Println("safe reports", safe )
+
 }
 
 func reverse(data []int) []int{
@@ -82,4 +83,26 @@ func toInt(data []string) []int{
 		
 	}
 	return newData
+}
+
+func checkUnsafe(slice []int){
+	fmt.Println("slice comming in  ---", slice)
+	var newSLice []int
+	for i := 0; i < len(slice); i ++  {	
+		newSLice = removeElementFromSlice(slice, i)
+		slice = newSLice
+	fmt.Println("slice going out  ---", slice)
+	}
+}
+
+func removeElementFromSlice(slice []int, index int) []int{
+	var newSlice []int
+	for i, val := range slice{
+		if index != i {
+			newSlice = append(newSlice, val)
+		fmt.Println("this e new slice ---", newSlice)
+		}
+	}
+	fmt.Println("this should remain the dame  ---", slice)
+	return newSlice
 }
